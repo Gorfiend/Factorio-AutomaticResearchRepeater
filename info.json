@@ -1,0 +1,9 @@
+{
+  "name": "AutomaticResearchRepeater",
+  "version": "0.0.1",
+  "title": "AutomaticResearchRepeater",
+  "author": "Gorfiend",
+  "factorio_version": "2.0",
+  "dependencies": [ "base >= 2.0" ],
+  "description": "Automatically requeues repeatable technologies when they complete"
+}
