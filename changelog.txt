@@ -1,4 +1,8 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.0.1
-Date: ?????
+Version: 1.0.0
+Date: 2025-01-28
   Features:
+    - Initial Release
+    - Automatically requeue repeatable techs when they finish researching
+    - Ability to turn on/off for each technology
+    - Ability to specify a maximum level to requeue until
