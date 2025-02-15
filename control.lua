@@ -27,7 +27,7 @@ script.on_event(defines.events.on_research_finished, function(event)
     local force_data = storage.forces[force.index]
     if not force_data.enabled then return end -- globally disabled for this force
 
-    local tech_data = force_data.techs[tech.name]
+    local tech_data = get_tech_data(force_data, tech.name)
     if not tech_data.requeue then return end -- this tech disabled for this force
 
     if tech_data.max_level and tech_data.max_level > 0 then
@@ -46,10 +46,9 @@ script.on_event(defines.events.on_research_finished, function(event)
     force.add_research(tech)
 end)
 
---- @param force LuaForce
+--- @param force_data ArrForceData
 --- @param tech_name string
-function get_tech_data(force, tech_name)
-    local force_data = storage.forces[force.index]
+function get_tech_data(force_data, tech_name)
     if not force_data.techs[tech_name] then
         force_data.techs[tech_name] = {
             requeue = true,
@@ -67,7 +66,7 @@ function add_tech_button(parent, tech, force)
         parent.arr_requeue_tech_button.destroy()
     end
     local force_data = storage.forces[force.index]
-    local tech_data = force_data.techs[tech.name]
+    local tech_data = get_tech_data(force_data, tech.name)
 
 
     --- @type TechnologyResearchState
@@ -208,7 +207,7 @@ function toggle_gui(event)
     })
 
     for _, tech in pairs(storage.all_techs) do
-        local tech_data = get_tech_data(force, tech.name)
+        local tech_data = get_tech_data(force_data, tech.name)
         local tech_panel = tech_table.add({
             type = "frame",
             name = tech.name,
@@ -264,7 +263,8 @@ function handle_requeue_button(event)
     if not player then return end
     local force_data = storage.forces[player.force_index]
 
-    force_data.techs[tech_name].requeue = not force_data.techs[tech_name].requeue
+    local tech_data = get_tech_data(force_data, tech_name)
+    tech_data.requeue = not tech_data.requeue
     local force_tech = player.force.technologies[tech_name]
 
     for _, p in pairs(player.force.players) do
@@ -324,7 +324,7 @@ function handle_max_level_field(event)
 
     local new_max = tonumber(event.element.text) or 0
 
-    force_data.techs[tech_name].max_level = new_max
+    get_tech_data(force_data, tech_name).max_level = new_max
     local force_tech = player.force.technologies[tech_name]
 
     for _, p in pairs(player.force.players) do
@@ -399,6 +399,17 @@ end)
 
 script.on_event(defines.events.on_player_removed, function(event)
     storage.players[event.player_index] = nil
+end)
+
+script.on_event(defines.events.on_force_created, function(event)
+    storage.forces[event.force.index] = {
+        enabled = true,
+        techs = {},
+    }
+end)
+
+script.on_event(defines.events.on_forces_merged, function(event)
+    storage.forces[event.source_index] = nil
 end)
 
 script.on_init(function()
