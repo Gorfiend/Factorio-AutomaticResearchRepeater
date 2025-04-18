@@ -20,6 +20,11 @@ storage = {}
 --- @field max_level int Don't requeue when this level is researched or already in the queue
 
 script.on_event(defines.events.on_research_finished, function(event)
+    -- Skip researches completed by a script.
+    -- This includes the "instant-research" function in editor mode.
+    -- Player probably doesn't want this tech to be automatically requeued.
+    if event.by_script then return end
+
     local tech = event.research
     if tech.level >= tech.prototype.max_level then return end -- Reached max level for this tech
 
