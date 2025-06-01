@@ -1,8 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+Date: 2025-06-01
+  Bugfixes:
+    - Add a scroll bar to the tech panel to better support many repeatable techs
+---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 2025-04-18
   Changes:
-    - Don't requeue when a research is completed by script (this includes auto-complete in editor mode).
+    - Don't requeue when a research is completed by script (this includes auto-complete in editor mode)
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.1
 Date: 2025-02-15
