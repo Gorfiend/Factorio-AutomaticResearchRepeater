@@ -105,7 +105,7 @@ function refresh_force_guis(force)
         local player_gui_frame = storage.players[p.index].config_frame
         if player_gui_frame and player_gui_frame.valid then
             player_gui_frame.arr_global_enable_button.state = storage.forces[force.index].enabled
-            for _, tech_frame in pairs(player_gui_frame.tech_table.children) do
+            for _, tech_frame in pairs(player_gui_frame.tech_table_scroll.tech_table.children) do
                 local force_tech = force.technologies[tech_frame.name]
                 add_tech_button(tech_frame, force_tech, force)
             end
@@ -205,10 +205,17 @@ function toggle_gui(event)
         caption = { "arr-disable-all" },
     })
 
-    local tech_table = player_data.config_frame.add({
+    local tech_table_scroll = player_data.config_frame.add({
+        type = "scroll-pane",
+        name = "tech_table_scroll",
+        vertical_scroll_policy = "auto",
+    })
+    tech_table_scroll.style.maximal_height = 650
+
+    local tech_table = tech_table_scroll.add({
         type = "table",
         name = "tech_table",
-        column_count = 7,
+        column_count = 10,
     })
 
     for _, tech in pairs(storage.all_techs) do
@@ -275,7 +282,7 @@ function handle_requeue_button(event)
     for _, p in pairs(player.force.players) do
         player_gui_frame = storage.players[p.index].config_frame
         if player_gui_frame and player_gui_frame.valid then
-            local tf = player_gui_frame.tech_table[tech_name]
+            local tf = player_gui_frame.tech_table_scroll.tech_table[tech_name]
             tf.arr_requeue_tech_button.destroy()
 
             add_tech_button(tf, force_tech, player.force --[[@as LuaForce]])
@@ -335,7 +342,7 @@ function handle_max_level_field(event)
     for _, p in pairs(player.force.players) do
         player_gui_frame = storage.players[p.index].config_frame
         if player_gui_frame and player_gui_frame.valid then
-            local tf = player_gui_frame.tech_table[tech_name]
+            local tf = player_gui_frame.tech_table_scroll.tech_table[tech_name]
             if p.index ~= event.player_index then
                 -- Don't interrupt the player currently typing
                 local field = tf.arr_max_level_tech_field
